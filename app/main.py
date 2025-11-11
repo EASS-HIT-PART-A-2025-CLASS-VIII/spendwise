@@ -4,11 +4,11 @@ from . import database, models, crud, schemas
 
 app = FastAPI(title="🎬 Movie Catalogue API")
 
-
 @app.on_event("startup")
 def on_startup():
     database.create_db_and_tables()
 
+#Define all api endpoints
 
 @app.get("/movies", response_model=list[schemas.MovieRead])
 def list_movies(session: Session = Depends(database.get_session)):
