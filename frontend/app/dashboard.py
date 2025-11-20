@@ -4,8 +4,6 @@ from client import list_movies, create_movie, delete_movie  # ✅ Correct local 
 
 st.set_page_config(page_title="🎬 Movie Dashboard", layout="wide")
 st.title("🎬 FastAPI Movie Dashboard")
-st.caption("Connected to your FastAPI backend (http://localhost:8000)")
-
 # ----------------------------
 # Cached GET requests
 # ----------------------------
@@ -17,7 +15,6 @@ def cached_movies():
 # ----------------------------
 # Fetch and show all movies
 # ----------------------------
-st.subheader("📋 Movies List")
 with st.spinner("Fetching movies..."):
     try:
         movies = cached_movies()
@@ -32,11 +29,14 @@ else:
     movies_df = pd.DataFrame(movies)
     if "id" in movies_df.columns:
         movies_df = movies_df[["id", "title", "director", "year", "rating"]]
+    movies_df["year"] = movies_df["year"].astype(str)
     st.metric("Total movies", len(movies_df))
+
     st.dataframe(
         movies_df.to_dict(orient="records"),
         height=400,
-        hide_index=True,
+        use_container_width=True,
+        column_config={"index": None},
     )
 
 # ----------------------------

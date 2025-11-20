@@ -10,14 +10,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # Settings: loads .env or defaults
 # ───────────────────────────────
 class UISettings(BaseSettings):
-    api_base_url: str = "http://localhost:8000"  # URL of your FastAPI backend
-    trace_id: str = "ui-streamlit"               # used for debugging/log tracing
+    api_base_url: str = "http://backend:8000"
+    trace_id: str = "ui-streamlit"
 
-    model_config = SettingsConfigDict(
-        env_prefix="MOVIE_",
-        env_file=".env",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_prefix="MOVIE_", env_file=".env", extra="ignore")
 
 
 settings = UISettings()

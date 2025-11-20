@@ -1,8 +1,10 @@
-## 🎨 Streamlit Dashboard
+# 🎨 Streamlit Dashboard
 
 The **Streamlit dashboard** provides a simple interface for viewing, adding, deleting, and exporting movies.
 
-### ▶️ Run the Dashboard
+---
+
+## ▶️ Run the Dashboard
 
 Make sure the backend (FastAPI) is running first:
 
@@ -10,28 +12,30 @@ Make sure the backend (FastAPI) is running first:
 cd backend
 uv run uvicorn app.main:app --reload
 ```
+
 Then start the dashboard:
 
 ```bash
 cd frontend
 uv run streamlit run app/dashboard.py
 ```
-Access it at http://localhost:8501.
 
-### 🧩 Features
-📋 List all movies from the FastAPI backend
+Access it at [http://localhost:8501](http://localhost:8501)
 
-➕ Add new movies with input validation (rating between 0–10)
+---
 
-🗑️ Delete existing movies
+## 🧩 Features
 
-🔄 Refresh cached data
+- 📋 List all movies from the FastAPI backend  
+- ➕ Add new movies with input validation (rating between 0–10)  
+- 🗑️ Delete existing movies  
+- 🔄 Refresh cached data  
+- 💾 Export movies to CSV (`movies_export.csv` in the frontend folder)
 
-💾 Export movies to CSV (creates movies_export.csv in the frontend folder)
+---
 
-### ⚙️ Notes
-- The dashboard caches data for 30 seconds (st.cache_data).
+## ⚙️ Notes
 
-- Invalid form inputs (like rating > 10) trigger inline error messages and do not send bad data to the backend.
-
-- No authentication is required.
+- The dashboard caches data for 30 seconds (`st.cache_data`).  
+- Invalid form inputs (like rating > 10) trigger inline error messages and prevent invalid API calls.  
+- No authentication is required.  
