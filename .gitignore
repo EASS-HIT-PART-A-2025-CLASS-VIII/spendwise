@@ -8,4 +8,6 @@ __pycache__/
 .idea/
 pytest_cache/
 backend/app/data/*.db
+.python-version
+
 
