@@ -22,6 +22,7 @@ The API allows users to list, create, update, and delete movies locally or insid
 
 ### 1️⃣ Create a virtual environment
 
+####   Make sure you are in fastapi-movies directory
 ```bash
 uv venv
 source .venv/bin/activate
@@ -31,6 +32,9 @@ uv run uvicorn app.main:app --reload
 ---
 
 ## 🐳 Run with Docker
+
+####   - Make sure you are in fastapi-movies directory
+
 
 ### 1️⃣ Build the Docker image
 

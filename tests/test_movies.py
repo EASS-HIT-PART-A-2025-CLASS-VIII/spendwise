@@ -3,7 +3,6 @@ from app.main import app
 
 client = TestClient(app)
 
-
 def test_create_movie():
     response = client.post("/movies", json={
         "title": "Interstellar",
