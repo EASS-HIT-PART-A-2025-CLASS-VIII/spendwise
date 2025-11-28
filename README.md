@@ -7,14 +7,14 @@ The API allows users to list, create, update, and delete movies locally or insid
 
 ## 🧭 Project Overview
 
-| Component | Description                                                                         |
-|------------|-------------------------------------------------------------------------------------|
-| **Framework** | [FastAPI](https://fastapi.tiangolo.com/) - high-performance Python web framework    |
-| **ORM Layer** | [SQLModel](https://sqlmodel.tiangolo.com/) - combines SQLAlchemy + Pydantic         |
-| **Database** | SQLite                                                                              |
-| **Environment Tool** | [`uv`](https://github.com/astral-sh/uv) - fast Python package & environment manager |
-| **Testing** | [pytest](https://docs.pytest.org/) + FastAPI TestClient                             |
-| **CLI Utility** | [Typer](https://typer.tiangolo.com/) - for database seeding and listing movies      |
+| Component | Description                                                                       |
+|------------|-----------------------------------------------------------------------------------|
+| **Framework** | [FastAPI](https://fastapi.tiangolo.com/) - high-performance Python web framework  |
+| **ORM Layer** | [SQLModel](https://sqlmodel.tiangolo.com/) - combines SQLAlchemy + Pydantic       |
+| **Database** | [SQLite](https://sqlite.org/) Light Local SQL DB                                  |
+| **Environment Tool** | [uv](https://github.com/astral-sh/uv) - fast Python package & environment manager |
+| **Testing** | [pytest](https://docs.pytest.org/) + FastAPI TestClient                           |
+| **CLI Utility** | [Typer](https://typer.tiangolo.com/) - for database seeding and listing movies    |
 
 ---
 
