@@ -5,13 +5,13 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # ---- Copy project files ----
-COPY .. .
+# ---- Copy project files ----
+COPY . .
 
 # ---- Install uv and project dependencies ----
 RUN pip install --no-cache-dir uv && \
     uv venv && \
-    uv pip install --no-cache-dir -r requirements.txt && \
-    uv pip install uvicorn
+    uv pip install --no-cache-dir -r requirements.txt
 
 # ---- Expose FastAPI port ----
 EXPOSE 8000
