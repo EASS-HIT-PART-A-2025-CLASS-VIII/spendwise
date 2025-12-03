@@ -1,7 +1,8 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
-#Define all types and dtos to be used in the endpoints and services.
+# Define all types and dtos to be used in the endpoints and services.
+
 
 class MovieBase(BaseModel):
     title: str

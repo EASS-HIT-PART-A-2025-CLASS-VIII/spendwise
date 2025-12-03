@@ -6,6 +6,7 @@ from .models import Movie
 
 app = typer.Typer(help="🎬 Manage the Movie Catalogue database")
 
+
 @app.command()
 def seed(csv_path: str = "data/movies.csv"):
     """Seed the database with movies from a CSV file."""
@@ -13,14 +14,14 @@ def seed(csv_path: str = "data/movies.csv"):
 
     with Session(engine) as session:
         try:
-            with open(csv_path, newline='', encoding='utf-8') as csvfile:
+            with open(csv_path, newline="", encoding="utf-8") as csvfile:
                 reader = csv.DictReader(csvfile)
                 movies = [
                     Movie(
                         title=row["title"],
                         director=row["director"],
                         year=int(row["year"]),
-                        rating=float(row["rating"]) if row.get("rating") else None
+                        rating=float(row["rating"]) if row.get("rating") else None,
                     )
                     for row in reader
                 ]
@@ -32,6 +33,7 @@ def seed(csv_path: str = "data/movies.csv"):
         session.commit()
         typer.echo(f"Seeded database with {len(movies)} movies from {csv_path}")
 
+
 @app.command()
 def list():
     """List all movies currently in the database."""
@@ -42,6 +44,7 @@ def list():
             raise typer.Exit()
         for movie in result:
             typer.echo(f"{movie.id}: {movie.title} ({movie.year}) ⭐ {movie.rating}")
+
 
 @app.command()
 def reset():
