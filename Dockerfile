@@ -4,12 +4,11 @@ WORKDIR /app
 
 COPY . .
 
-# ---- Install uv and project dependencies ----
+# ---- Install uv, create venv and install requirements ----
 RUN pip install --no-cache-dir uv && \
     uv venv && \
     uv pip install --no-cache-dir -r requirements.txt
 
-# ---- Expose FastAPI port ----
 EXPOSE 8000
 
 # ---- Start FastAPI app using uv ----

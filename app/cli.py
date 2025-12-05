@@ -1,10 +1,10 @@
 import csv
 import typer
 from sqlmodel import Session, select
-from .database import engine, create_db_and_tables
-from .models import Movie
+from app.database import engine, create_db_and_tables
+from app.models.movie import Movie
 
-app = typer.Typer(help="🎬 Manage the Movie Catalogue database")
+app = typer.Typer(help="Manage the Movie Catalogue database")
 
 
 @app.command()

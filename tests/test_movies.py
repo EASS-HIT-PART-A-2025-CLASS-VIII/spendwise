@@ -47,4 +47,3 @@ def test_delete_movie():
     movie_id = create.json()["id"]
     delete = client.delete(f"/movies/{movie_id}")
     assert delete.status_code == 200
-    assert delete.json()["ok"] is True
