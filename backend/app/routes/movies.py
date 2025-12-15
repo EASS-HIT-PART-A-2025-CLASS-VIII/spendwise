@@ -7,7 +7,7 @@ from app.services.movies_service import MovieService
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
 
-@router.get("/", response_model=list[MovieRead])
+@router.get("", response_model=list[MovieRead])
 def list_movies(session: Session = Depends(get_session)):
     return MovieService(session).list_movies()
 
@@ -20,7 +20,7 @@ def get_movie(movie_id: int, session: Session = Depends(get_session)):
     return movie
 
 
-@router.post("/", response_model=MovieRead)
+@router.post("", response_model=MovieRead)
 def create_movie(movie: MovieCreate, session: Session = Depends(get_session)):
     return MovieService(session).create_movie(movie)
 

@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi-movies-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app/data:/app/app/data
+    networks:
+      - movies_net
+
+  frontend:
+    build: ./frontend
+    container_name: fastapi-movies-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - MOVIE_API_BASE_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - movies_net
+
+networks:
+  movies_net:
+    driver: bridge

@@ -7,3 +7,9 @@ __pycache__/
 .env/
 .idea/
 pytest_cache/
+backend/app/data/*.db
+.python-version
+**/.venv/
+
+
+
