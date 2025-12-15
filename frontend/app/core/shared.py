@@ -95,13 +95,10 @@ def render_metrics(df: pd.DataFrame) -> None:
     st.markdown(
         """
         <style>
-            /* This targets the large value (e.g., '123' or '7.8 / 10') */
             div[data-testid="stMetricValue"] {
-                font-size: 24px;  /* Adjust this size (e.g., 20px, 24px, 28px) */
+                font-size: 30px;  
                 line-height: 1.2;
             }
-
-            /* Your original CSS for the small caption (kept for the director overflow) */
             .small-caption {
                 font-size: 0.75rem !important;
                 margin-top: -10px !important;

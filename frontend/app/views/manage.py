@@ -82,8 +82,6 @@ def main():
                 except Exception as e:
                     st.error(f"❌ Failed to add movie: {e}")
 
-            st.stop()
-
     with delete_tab:
         st.subheader("Remove a movie")
         if movies_df.empty:
