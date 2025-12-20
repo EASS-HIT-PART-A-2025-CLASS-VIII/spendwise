@@ -1,8 +1,10 @@
 import httpx
 import streamlit as st
 from typing import Any
+from datetime import datetime
+import os
 
-API_URL = "http://backend:8000"
+API_URL = os.getenv("API_URL", "http://backend:8000")
 
 
 def get_client():
@@ -12,7 +14,6 @@ def get_client():
     return httpx.Client(base_url=API_URL, headers=headers, timeout=10.0)
 
 
-# Auth
 def login(username, password):
     res = get_client().post(
         "/auth/token", data={"username": username, "password": password}
@@ -29,15 +30,22 @@ def register(username, password):
     return res.json()
 
 
-# Transactions
 def list_transactions() -> list[dict[str, Any]]:
-    res = get_client().get("/transactions")
-    res.raise_for_status()
-    return res.json()
+    try:
+        res = get_client().get("/transactions")
+        res.raise_for_status()
+        return res.json()
+    except Exception:
+        return []
 
 
 def create_transaction(amount: float, category: str, description: str):
-    payload = {"amount": amount, "category": category, "description": description}
+    payload = {
+        "amount": amount,
+        "category": category,
+        "description": description,
+        "date": datetime.now().isoformat(),
+    }
     res = get_client().post("/transactions", json=payload)
     res.raise_for_status()
     return res.json()
@@ -48,7 +56,6 @@ def delete_transaction(tx_id: int):
     res.raise_for_status()
 
 
-# AI & Worker
 def get_ai_advice(query: str):
     res = get_client().get("/ai/advice", params={"query": query})
     res.raise_for_status()

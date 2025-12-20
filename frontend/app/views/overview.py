@@ -1,34 +1,56 @@
 import streamlit as st
 import plotly.express as px
-from app.core.shared import get_transactions_df
+from ..core.shared import get_transactions_df, load_css
 
 
 def main():
-    st.title("📊 Financial Overview")
+    load_css()
     df = get_transactions_df()
 
-    if df.empty:
-        st.info("No transactions yet. Add some in the Transactions tab!")
-        return
+    _, center_col, _ = st.columns([1, 4, 1])
 
-    # Metrics
-    total_spent = df["amount"].sum()
-    avg_tx = df["amount"].mean()
-    top_cat = df.groupby("category")["amount"].sum().idxmax()
+    with center_col:
+        st.title("📊 Financial Insights")
 
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Total Spent", f"${total_spent:,.2f}")
-    m2.metric("Avg. Transaction", f"${avg_tx:,.2f}")
-    m3.metric("Top Category", top_cat)
+        if df.empty:
+            st.info("No transactions found. Go to 'Manage' to add your first expense.")
+            return
 
-    # Charts
-    c1, c2 = st.columns(2)
-    with c1:
-        fig_pie = px.pie(
-            df, values="amount", names="category", title="Spending by Category"
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Total Spent", f"${df['amount'].sum():,.2f}")
+        m2.metric("Monthly Avg", f"${df['amount'].mean():,.2f}")
+        m3.metric("Record Count", len(df))
+
+        st.write("")
+
+        c1, c2 = st.columns(2)
+        with c1:
+            fig_pie = px.pie(
+                df,
+                values="amount",
+                names="category",
+                hole=0.5,
+                template="plotly_dark",
+                title="Spending Mix",
+            )
+            fig_pie.update_layout(margin=dict(t=40, b=0, l=0, r=0))
+            st.plotly_chart(fig_pie, use_container_width=True)
+        with c2:
+            cat_df = df.groupby("category")["amount"].sum().reset_index()
+            fig_bar = px.bar(
+                cat_df,
+                x="category",
+                y="amount",
+                color="category",
+                template="plotly_dark",
+                title="Category Totals",
+            )
+            fig_bar.update_layout(showlegend=False, margin=dict(t=40, b=0, l=0, r=0))
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+        st.subheader("Latest Transactions")
+        st.dataframe(
+            df.sort_values("date", ascending=False),
+            use_container_width=True,
+            hide_index=True,
         )
-        st.plotly_chart(fig_pie, use_container_width=True)
-    with c2:
-        df_daily = df.set_index("date").resample("D")["amount"].sum().reset_index()
-        fig_line = px.line(df_daily, x="date", y="amount", title="Daily Spending Trend")
-        st.plotly_chart(fig_line, use_container_width=True)
