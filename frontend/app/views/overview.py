@@ -1,46 +1,34 @@
+import streamlit as st
+import plotly.express as px
+from app.core.shared import get_transactions_df
+
+
 def main():
-    import streamlit as st
-    from app.core.shared import (
-        load_css,
-        get_movies_df,
-        render_filters,
-        render_metrics,
-        render_charts,
-    )
+    st.title("📊 Financial Overview")
+    df = get_transactions_df()
 
-    load_css()
+    if df.empty:
+        st.info("No transactions yet. Add some in the Transactions tab!")
+        return
 
-    movies_df = get_movies_df()
+    # Metrics
+    total_spent = df["amount"].sum()
+    avg_tx = df["amount"].mean()
+    top_cat = df.groupby("category")["amount"].sum().idxmax()
 
-    rating_filter, year_range = render_filters(movies_df)
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Total Spent", f"${total_spent:,.2f}")
+    m2.metric("Avg. Transaction", f"${avg_tx:,.2f}")
+    m3.metric("Top Category", top_cat)
 
-    filtered_df = movies_df.copy()
-    if not filtered_df.empty:
-        filtered_df = filtered_df[
-            (filtered_df["rating"] >= rating_filter)
-            & (filtered_df["year"].between(year_range[0], year_range[1]))
-        ]
-
-    st.title("🎬 FastAPI Movie Dashboard")
-
-    render_metrics(filtered_df)
-
-    if not filtered_df.empty:
-        st.divider()
-        render_charts(filtered_df)
-
-        st.divider()
-        st.subheader("📋 Movie Library")
-        st.dataframe(
-            filtered_df,
-            use_container_width=True,
-            height=420,
-            hide_index=True,
-            column_config={
-                "id": st.column_config.NumberColumn("ID", format="%d"),
-                "title": st.column_config.TextColumn("Title"),
-                "director": st.column_config.TextColumn("Director"),
-                "year": st.column_config.NumberColumn("Year", format="%d"),
-                "rating": st.column_config.NumberColumn("Rating", format="%.1f"),
-            },
+    # Charts
+    c1, c2 = st.columns(2)
+    with c1:
+        fig_pie = px.pie(
+            df, values="amount", names="category", title="Spending by Category"
         )
+        st.plotly_chart(fig_pie, use_container_width=True)
+    with c2:
+        df_daily = df.set_index("date").resample("D")["amount"].sum().reset_index()
+        fig_line = px.line(df_daily, x="date", y="amount", title="Daily Spending Trend")
+        st.plotly_chart(fig_line, use_container_width=True)
