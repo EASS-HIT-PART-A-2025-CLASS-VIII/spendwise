@@ -14,13 +14,13 @@ class TransactionCreate(TransactionBase):
     pass
 
 
+class TransactionUpdate(TransactionBase):
+    category: Optional[str] = None
+    amount: Optional[float] = None
+    description: Optional[str] = None
+    date: Optional[datetime] = None
+
+
 class TransactionRead(TransactionBase):
     id: int
     user_id: int
-
-
-class TransactionUpdate(SQLModel):
-    amount: Optional[float] = None
-    category: Optional[str] = None
-    description: Optional[str] = None
-    date: Optional[datetime] = None

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
-import { Manage } from './pages/Manage';
+import { Manage } from './pages/Manage/Manage.tsx';
 import { Login } from './pages/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AIAdvisor } from './pages/AIAdvisor.tsx';
