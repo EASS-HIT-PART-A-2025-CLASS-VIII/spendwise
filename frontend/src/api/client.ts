@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
-
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
 
-// Automatically add the Bearer token to every request if it exists
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -14,5 +11,16 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;

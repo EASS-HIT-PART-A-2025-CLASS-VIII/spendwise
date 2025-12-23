@@ -11,10 +11,7 @@ services:
     build:
       context: ./backend
     container_name: spendwise-backend
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - DATABASE_URL=sqlite:///app/data/database.db
+    env_file: .env
     ports:
       - "8000:8000"
     depends_on:
@@ -29,9 +26,7 @@ services:
       context: ./backend
     container_name: spendwise-worker
     command: uv run python -m app.worker
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY} # <--- Added here
+    env_file: .env
     depends_on:
       - redis
       - backend
@@ -39,12 +34,13 @@ services:
       - spendwise_net
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     container_name: spendwise-frontend
     ports:
-      - "8501:8501"
-    environment:
-      - API_URL=http://backend:8000
+      - "5173:5173"
     depends_on:
       - backend
     networks:
