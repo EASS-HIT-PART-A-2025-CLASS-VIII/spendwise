@@ -10,10 +10,12 @@ from contextlib import asynccontextmanager
 DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     yield
+
 
 app = FastAPI(lifespan=lifespan, title="💰 SpendWise API")
 

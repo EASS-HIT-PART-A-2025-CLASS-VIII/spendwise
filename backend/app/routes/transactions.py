@@ -52,6 +52,7 @@ def delete_transaction(
         raise HTTPException(status_code=404, detail="Transaction not found")
     return {"message": "Transaction deleted"}
 
+
 @router.get("/report/list")
 def list_reports(current_user: str = Depends(get_current_user)):
     path = "data"

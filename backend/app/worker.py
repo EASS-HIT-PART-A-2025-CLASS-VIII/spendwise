@@ -17,15 +17,18 @@ async def generate_monthly_report(ctx, user_id: int):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
-    pdf.cell(40, 10, f"SpendWise Financial Report")
+    pdf.cell(40, 10, "SpendWise Financial Report")
     pdf.ln(10)
     pdf.set_font("Arial", "", 12)
     pdf.cell(40, 10, f"User ID: {user_id}")
     pdf.ln(10)
     pdf.cell(40, 10, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     pdf.ln(20)
-    pdf.multi_cell(0, 10,
-                   "This is a summary of your financial activity. In a production app, you would query the database here to list actual transactions.")
+    pdf.multi_cell(
+        0,
+        10,
+        "This is a summary of your financial activity. In a production app, you would query the database here to list actual transactions.",
+    )
 
     # Generate a unique filename
     filename = f"report_{user_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"

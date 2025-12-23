@@ -96,6 +96,12 @@ export const Manage: React.FC = () => {
           </button>
         </div>
       </div>
+
+
+
+
+
+
     </div>
   );
 };
