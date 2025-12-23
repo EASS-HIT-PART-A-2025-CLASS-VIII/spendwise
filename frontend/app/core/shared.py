@@ -8,42 +8,32 @@ def load_css():
         """
         <style>
         .stApp {
-            background-color: #0e1117;
-            color: #fafafa;
+            background-color: #0d1117 !important;
+            color: #c9d1d9 !important;
         }
-        [data-testid="stHeader"] {
-            background-color: rgba(0,0,0,0);
+        /* Make all text inputs look identical and clean */
+        div[data-testid="stTextInput"] input {
+            background-color: #161b22 !important;
+            color: #f0f6fc !important;
+            border: 1px solid #30363d !important;
+            border-radius: 8px !important;
+            height: 45px !important;
+            padding: 10px !important;
         }
-        [data-testid="stSidebar"] {
-            background-color: #161b22;
-            border-right: 1px solid #30363d;
+        /* Remove focus border glow for a cleaner look */
+        div[data-testid="stTextInput"] input:focus {
+            border-color: #58a6ff !important;
+            box-shadow: none !important;
         }
-        div[data-testid="stMetric"] {
-            background-color: #1c2128;
-            border: 1px solid #30363d;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        [data-testid="stForm"] {
-            background-color: #1c2128;
-            border: 1px solid #30363d;
-            border-radius: 15px;
-            padding: 30px;
-        }
-        .report-card {
-            background-color: #1c2128;
-            border: 1px solid #30363d;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-        }
+        /* Neutral headers */
         h1, h2, h3 {
-            text-align: center;
-            color: #4CAF50;
+            color: #f0f6fc !important;
+            text-align: center !important;
+            font-weight: 500 !important;
         }
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 24px;
-            justify-content: center;
+        /* Center content */
+        .block-container {
+            max-width: 800px !important;
         }
         </style>
     """,
@@ -62,19 +52,16 @@ def get_transactions_df() -> pd.DataFrame:
 
 def render_sidebar_nav():
     st.sidebar.markdown(
-        "<h1 style='font-size: 80px; margin: 0;'>💰</h1>", unsafe_allow_html=True
-    )
-    st.sidebar.markdown(
-        "<h2 style='text-align: center; margin-top: 0; color: white;'>SpendWise</h2>",
+        "<div style='text-align: center; padding-bottom: 20px;'><span style='font-size: 50px;'>💰</span><br><b style='font-size: 20px; color: #f0f6fc;'>SpendWise</b></div>",
         unsafe_allow_html=True,
     )
     st.sidebar.divider()
-
-    if st.sidebar.button("🚪 Logout", use_container_width=True):
+    options = ["Dashboard", "Manage", "AI Advisor", "Reports"]
+    selection = st.sidebar.radio(
+        "Navigation", options, label_visibility="collapsed", key="nav_radio"
+    )
+    st.sidebar.write("")
+    if st.sidebar.button("🚪 Log Out", use_container_width=True):
         st.session_state.token = None
         st.rerun()
-
-    st.sidebar.write("")
-    return st.sidebar.radio(
-        "Navigation", ["Dashboard", "Manage", "AI Advisor", "Reports"]
-    )
+    return selection

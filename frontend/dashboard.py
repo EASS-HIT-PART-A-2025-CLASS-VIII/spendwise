@@ -1,7 +1,7 @@
 import streamlit as st
 from app.views import overview, manage, reports, ai_advisor
 from app.core.client import login, register
-from app.core.shared import load_css
+from app.core.shared import load_css, render_sidebar_nav
 
 PAGES = {
     "Dashboard": overview,
@@ -19,43 +19,38 @@ def main():
         st.session_state.token = None
 
     if not st.session_state.token:
-        _, center_col, _ = st.columns([1, 2, 1])
-        with center_col:
-            st.markdown("<h1 style='font-size: 60px;'>💰</h1>", unsafe_allow_html=True)
-            st.title("SpendWise")
+        _, col, _ = st.columns([1, 2, 1])
+        with col:
+            st.markdown(
+                "<h1 style='text-align: center !important;'>💰 SpendWise</h1>",
+                unsafe_allow_html=True,
+            )
+            tabs = st.tabs(["Login", "Register"])
 
-            tab1, tab2 = st.tabs(["Login", "Register"])
+            with tabs[0]:
+                if st.button("Sign In", use_container_width=True, type="primary"):
+                    try:
+                        data = login(
+                            st.session_state.login_user, st.session_state.login_pass
+                        )
+                        st.session_state.token = data["access_token"]
+                        st.rerun()
+                    except Exception:
+                        st.error("Incorrect credentials")
 
-            with tab1:
-                with st.form("login_form"):
-                    u = st.text_input("Username")
-                    p = st.text_input("Password", type="password")
-                    if st.form_submit_button("Sign In", use_container_width=True):
-                        try:
-                            data = login(u, p)
-                            st.session_state.token = data["access_token"]
-                            st.rerun()
-                        except Exception:
-                            st.error("Invalid credentials")
-
-            with tab2:
-                with st.form("reg_form"):
-                    ru = st.text_input("New Username")
-                    rp = st.text_input("New Password", type="password")
-                    if st.form_submit_button(
-                        "Create Account", use_container_width=True
-                    ):
-                        try:
-                            register(ru, rp)
-                            st.success("Account created! You can now log in.")
-                        except Exception:
-                            st.error("Registration failed.")
+            with tabs[1]:
+                if st.button("Create Account", use_container_width=True):
+                    try:
+                        register(st.session_state.reg_user, st.session_state.reg_pass)
+                        st.success("User created. Now Sign In.")
+                    except Exception:
+                        st.error("Signup failed")
         return
 
-    from app.core.shared import render_sidebar_nav
-
+    # Main App Logic
     selection = render_sidebar_nav()
-    PAGES[selection].main()
+    page = PAGES.get(selection, overview)
+    page.main()
 
 
 if __name__ == "__main__":

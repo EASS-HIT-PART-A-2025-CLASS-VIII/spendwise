@@ -1,49 +1,58 @@
 import streamlit as st
+import time
 from ..core.client import create_transaction, delete_transaction
 from ..core.shared import get_transactions_df, load_css
 
 
 def main():
     load_css()
-    _, center_col, _ = st.columns([1, 2, 1])
+    _, center_col, _ = st.columns([1, 6, 1])
 
     with center_col:
-        st.title("💸 Manage Finances")
-        t1, t2 = st.tabs(["➕ Add Entry", "🗑️ Remove Entry"])
+        st.title("Transaction Management")
+        tab1, tab2 = st.tabs(["Add Entry", "Delete Record"])
 
-        with t1:
-            with st.form("entry_form", clear_on_submit=True):
-                amount = st.number_input("Amount ($)", min_value=0.01, step=0.5)
+        with tab1:
+            st.write("")
 
-                cat_col1, cat_col2 = st.columns(2)
-                with cat_col1:
-                    choice = st.selectbox(
-                        "Category", ["Food", "Rent", "Transport", "Tech", "Other"]
-                    )
-                with cat_col2:
-                    custom = st.text_input("Or Custom Name")
+            # 3 Identical Text Inputs
+            amount_str = st.text_input("Amount", value="20.0", placeholder="0.00")
+            category = st.text_input("Category", placeholder="e.g. Food, Rent, Tech")
+            description = st.text_input("Description", placeholder="What was this for?")
 
-                desc = st.text_input("Description (optional)")
+            st.write("")
 
-                final_cat = custom if custom else choice
+            if st.button("Save Transaction", use_container_width=True, type="primary"):
+                # Basic validation
+                try:
+                    amount_val = float(amount_str)
+                    if not category:
+                        st.error("Please enter a category.")
+                    else:
+                        create_transaction(amount_val, category, description)
+                        st.toast(f"✅ Saved ${amount_val:.2f} to {category}")
+                        time.sleep(1.2)
+                        st.rerun()
+                except ValueError:
+                    st.error("Please enter a valid number for the amount.")
 
-                if st.form_submit_button("Save Transaction", use_container_width=True):
-                    create_transaction(amount, final_cat, desc)
-                    st.success(f"Added ${amount} to {final_cat}")
-                    st.rerun()
-
-        with t2:
+        with tab2:
+            st.write("")
             df = get_transactions_df()
             if not df.empty:
-                mapping = {
-                    f"{r.category}: {r.description} (${r.amount})": r.id
+                # Custom selection box for deletion
+                records = {
+                    f"{r.category} - ${r.amount} ({r.description})": r.id
                     for r in df.itertuples()
                 }
-                target = st.selectbox("Select to delete", list(mapping.keys()))
+                target = st.selectbox("Select record to remove", list(records.keys()))
+
                 if st.button(
                     "Delete Permanently", type="primary", use_container_width=True
                 ):
-                    delete_transaction(mapping[target])
+                    delete_transaction(records[target])
+                    st.toast("🗑️ Record removed.")
+                    time.sleep(1.2)
                     st.rerun()
             else:
-                st.write("No transactions to delete.")
+                st.info("No records to delete.")
