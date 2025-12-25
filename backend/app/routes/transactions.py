@@ -88,12 +88,12 @@ async def trigger_report(current_user: User = Depends(get_current_user)):
 
 
 @router.get("/report/list")
-async def list_reports():
+async def list_reports(current_user: User = Depends(get_current_user)):
     if not os.path.exists(REPORT_DIR):
         return []
-    files = [f for f in os.listdir(REPORT_DIR) if f.endswith(".pdf")]
-    # Sort newest first
-    files.sort(
-        key=lambda x: os.path.getmtime(os.path.join(REPORT_DIR, x)), reverse=True
-    )
-    return files
+
+    all_files = os.listdir(REPORT_DIR)
+    user_id_suffix = f"_{current_user.id}.pdf"
+    user_reports = [f for f in all_files if f.endswith(user_id_suffix)]
+
+    return sorted(user_reports, reverse=True)

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Lock, User, LogIn } from 'lucide-react';
 import apiClient from '../api/client';
 
@@ -24,8 +25,6 @@ export const Login: React.FC = () => {
 
       if (response.data.access_token) {
         localStorage.setItem('token', response.data.access_token);
-        // Using window.location.href or a state-driven redirect
-        // ensures the App component re-evaluates the ProtectedRoute
         window.location.href = '/';
       }
     } catch (err: any) {
@@ -39,8 +38,10 @@ export const Login: React.FC = () => {
     <div className="min-h-screen bg-[#0d1117] flex items-center justify-center p-6 text-[#c9d1d9]">
       <div className="w-full max-w-md bg-[#161b22] border border-[#30363d] rounded-2xl p-10 shadow-2xl">
         <div className="text-center mb-8">
-          <span className="text-6xl">💰</span>
-          <h1 className="text-3xl font-bold text-white mt-4">SpendWise</h1>
+          <h1 className="text-4xl font-black text-white tracking-tighter">
+            Spend<span className="text-[#58a6ff]">Wise</span>
+          </h1>
+          <p className="text-[#8b949e] text-sm mt-2 font-medium">Log in to your account</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -90,6 +91,15 @@ export const Login: React.FC = () => {
             )}
           </button>
         </form>
+
+        <div className="mt-8 text-center border-t border-[#30363d] pt-6">
+          <p className="text-[#8b949e] text-sm">
+            New to SpendWise?{' '}
+            <Link to="/register" className="text-[#58a6ff] font-bold hover:underline">
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

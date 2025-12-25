@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Calendar, TrendingUp, Zap } from 'lucide-react';
+import { Activity, Calendar, TrendingUp, Zap, ArrowRight, BarChart3 } from 'lucide-react';
 import {
   Area,
   AreaChart,
@@ -11,11 +11,13 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 
 export const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     apiClient
@@ -26,10 +28,40 @@ export const Dashboard: React.FC = () => {
 
   if (loading)
     return (
-      <div className="h-full flex items-center justify-center text-[#8b949e]">
-        Calculating Analytics...
+      <div className="h-[80vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#58a6ff]/20 border-t-[#58a6ff] rounded-full animate-spin" />
+          <span className="text-[#8b949e] font-bold text-xs uppercase tracking-widest">
+            Synchronizing Telemetry
+          </span>
+        </div>
       </div>
     );
+
+  if (!stats || stats.history.length === 0) {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-700">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-[#58a6ff] blur-3xl opacity-10 animate-pulse" />
+          <div className="relative w-24 h-24 bg-[#161b22] border border-[#30363d] rounded-[2.5rem] flex items-center justify-center text-[#58a6ff] shadow-2xl">
+            <BarChart3 size={40} />
+          </div>
+        </div>
+        <h2 className="text-4xl font-black text-white tracking-tighter">Initialize Your Ledger</h2>
+        <p className="text-[#8b949e] mt-4 max-w-sm font-medium leading-relaxed">
+          Your executive dashboard is currently offline. Deploy your first transaction to activate
+          category mixing and velocity analytics.
+        </p>
+        <button
+          onClick={() => navigate('/manage')}
+          className="mt-10 px-10 py-4 bg-white text-black font-black rounded-2xl hover:bg-[#f6f8fa] transition-all shadow-xl uppercase tracking-widest text-[10px] flex items-center gap-3 group"
+        >
+          Record First Entry{' '}
+          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -37,8 +69,8 @@ export const Dashboard: React.FC = () => {
         <h1 className="text-4xl font-black text-white tracking-tighter">
           Executive <span className="text-[#58a6ff]">Summary</span>
         </h1>
-        <div className="bg-[#161b22] border border-[#30363d] px-4 py-2 rounded-xl text-sm text-[#8b949e] flex items-center gap-2">
-          <Calendar size={16} />{' '}
+        <div className="bg-[#161b22] border border-[#30363d] px-4 py-2 rounded-xl text-sm text-[#8b949e] flex items-center gap-2 font-bold uppercase tracking-tighter">
+          <Calendar size={16} className="text-[#58a6ff]" />{' '}
           {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
         </div>
       </header>
@@ -69,7 +101,9 @@ export const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="bg-[#161b22] border border-[#30363d] rounded-3xl p-8 shadow-2xl">
-          <h3 className="text-white font-bold mb-6">Category Mix</h3>
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8b949e] mb-6">
+            Category Mix
+          </h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -94,17 +128,17 @@ export const Dashboard: React.FC = () => {
                     border: 'none',
                     borderRadius: '12px',
                   }}
-                  itemStyle={{
-                    color: 'white',
-                  }}
+                  itemStyle={{ color: 'white' }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-[#161b22] border border-[#30363d] rounded-3xl p-8">
-          <h3 className="text-white font-bold mb-6">Spending Velocity (30D)</h3>
+        <div className="lg:col-span-2 bg-[#161b22] border border-[#30363d] rounded-3xl p-8 shadow-2xl">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8b949e] mb-6">
+            Spending Velocity (30D)
+          </h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={stats.history}>
@@ -135,20 +169,22 @@ export const Dashboard: React.FC = () => {
 };
 
 const MetricCard = ({ label, value, trend, isUp, icon }: any) => (
-  <div className="bg-[#161b22] border border-[#30363d] p-8 rounded-3xl group hover:border-[#444c56] transition-all">
-    <div className="flex justify-between items-start mb-4">
-      <div className="p-3 bg-[#0d1117] rounded-2xl text-[#58a6ff] border border-[#30363d] group-hover:scale-110 transition-all">
+  <div className="bg-[#161b22] border border-[#30363d] p-8 rounded-[2rem] group hover:border-[#444c56] transition-all shadow-xl">
+    <div className="flex justify-between items-start mb-6">
+      <div className="p-3 bg-[#0d1117] rounded-2xl text-[#58a6ff] border border-[#30363d] group-hover:bg-[#58a6ff] group-hover:text-white transition-all">
         {icon}
       </div>
-      <span
-        className={`text-xs font-bold px-2 py-1 rounded-lg ${
-          isUp ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'
-        }`}
-      >
-        {trend}
-      </span>
+      {isUp !== null && (
+        <span
+          className={`text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter ${
+            isUp ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'
+          }`}
+        >
+          {trend}
+        </span>
+      )}
     </div>
-    <p className="text-sm font-bold text-[#8b949e] uppercase tracking-widest">{label}</p>
-    <h2 className="text-3xl font-black text-white mt-2">{value}</h2>
+    <p className="text-[10px] font-black text-[#8b949e] uppercase tracking-[0.2em]">{label}</p>
+    <h2 className="text-4xl font-black text-white mt-1 tracking-tighter">{value}</h2>
   </div>
 );

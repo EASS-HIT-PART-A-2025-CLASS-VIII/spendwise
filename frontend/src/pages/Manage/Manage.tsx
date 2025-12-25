@@ -296,7 +296,7 @@ export const Manage: React.FC = () => {
                   type="submit"
                   className="w-full bg-[#238636] hover:bg-[#2ea043] text-white font-black py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98] tracking-widest"
                 >
-                  {editingTransaction ? 'Update record' : 'Authorize transaction'}
+                  {editingTransaction ? 'Update Transaction' : 'Add Transaction'}
                 </button>
               </div>
             </form>

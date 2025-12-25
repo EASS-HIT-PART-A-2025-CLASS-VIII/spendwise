@@ -1,49 +1,85 @@
+import pytest
 from fastapi.testclient import TestClient
-from app import app
+from app.main import app
 
 client = TestClient(app)
 
 
-def test_create_movie():
+@pytest.fixture
+def auth_header():
+    username = "testuser_test"
+    password = "Password123!"
+
+    client.post("/auth/register", json={"username": username, "password": password})
+
     response = client.post(
-        "/movies",
+        "/auth/token", data={"username": username, "password": password}
+    )
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_user_registration_and_login():
+    reg_response = client.post(
+        "/auth/register", json={"username": "new_user", "password": "SecurePassword1!"}
+    )
+    assert reg_response.status_code == 200
+    assert "access_token" in reg_response.json()
+
+    login_response = client.post(
+        "/auth/token", data={"username": "new_user", "password": "SecurePassword1!"}
+    )
+    assert login_response.status_code == 200
+    assert login_response.json()["token_type"] == "bearer"
+
+
+def test_create_transaction(auth_header):
+    response = client.post(
+        "/transactions",
         json={
-            "title": "Interstellar",
-            "director": "Christopher Nolan",
-            "year": 2014,
-            "rating": 8.6,
+            "amount": 42.50,
+            "category": "Food",
+            "description": "Executive Lunch",
+            "date": "2025-12-25",
         },
+        headers=auth_header,
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["title"] == "Interstellar"
+    assert data["amount"] == 42.50
+    assert data["category"] == "Food"
 
 
-def test_get_movies():
-    response = client.get("/movies")
+def test_get_transactions(auth_header):
+    response = client.get("/transactions", headers=auth_header)
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 
-def test_update_movie():
-    create = client.post(
-        "/movies",
-        json={"title": "Old Title", "director": "Someone", "year": 2000, "rating": 5.0},
+def test_get_detailed_stats(auth_header):
+    client.post(
+        "/transactions",
+        json={
+            "amount": 100,
+            "category": "Bills",
+            "description": "Rent",
+            "date": "2025-12-25",
+        },
+        headers=auth_header,
     )
-    movie_id = create.json()["id"]
-    response = client.put(
-        f"/movies/{movie_id}",
-        json={"title": "New Title", "director": "Someone", "year": 2000, "rating": 7.0},
-    )
+
+    response = client.get("/transactions/stats/detailed", headers=auth_header)
     assert response.status_code == 200
-    assert response.json()["title"] == "New Title"
+    data = response.json()
+    assert "monthly_burn" in data
+    assert "categories" in data
 
 
-def test_delete_movie():
-    create = client.post(
-        "/movies",
-        json={"title": "Delete Me", "director": "Test", "year": 2024, "rating": 6.0},
-    )
-    movie_id = create.json()["id"]
-    delete = client.delete(f"/movies/{movie_id}")
-    assert delete.status_code == 200
+def test_unauthorized_access():
+    response = client.get("/transactions")
+    assert response.status_code == 401
+
+
+def test_generate_report_request(auth_header):
+    response = client.post("/transactions/report", headers=auth_header)
+    assert response.status_code == 200

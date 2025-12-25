@@ -127,5 +127,8 @@ class WorkerSettings:
 if __name__ == "__main__":
     from arq.worker import run_worker
 
-    print("--- [WORKER BOOT] ATTENDING REDIS QUEUE ---")
+    # We must use flush=True so Docker shows the logs immediately
+    print("--- [WORKER BOOT] ATTENDING REDIS QUEUE ---", flush=True)
+
+    # This is the blocking call that keeps the container alive
     run_worker(WorkerSettings)
