@@ -1,28 +1,59 @@
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: spendwise-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - spendwise_net
+
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    container_name: fastapi-movies-backend
+    container_name: spendwise-backend
+    env_file: .env
     ports:
       - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - redis
     volumes:
       - ./backend/app/data:/app/app/data
     networks:
-      - movies_net
+      - spendwise_net
+
+  worker:
+    build:
+      context: ./backend
+    container_name: spendwise-worker
+    command: python -m app.worker
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    env_file: .env
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./backend/app/data:/app/app/data
+    networks:
+      - spendwise_net
 
   frontend:
-    build: ./frontend
-    container_name: fastapi-movies-frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+    container_name: spendwise-frontend
     ports:
-      - "8501:8501"
-    environment:
-      - MOVIE_API_BASE_URL=http://backend:8000
+      - "5173:80"
     depends_on:
       - backend
     networks:
-      - movies_net
+      - spendwise_net
 
 networks:
-  movies_net:
+  spendwise_net:
     driver: bridge

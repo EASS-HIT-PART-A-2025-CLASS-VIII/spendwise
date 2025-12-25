@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#238636" />
+      <stop offset="100%" stop-color="#58a6ff" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(10, 20)">
+    <path d="M30 10 L60 10 L45 40 Z" fill="#238636" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
+    </path>
+    <path d="M10 40 L40 40 L25 70 Z" fill="#58a6ff" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" begin="1.5s" repeatCount="indefinite" />
+    </path>
+    <rect x="25" y="25" width="30" height="30" rx="8" fill="url(#brandGradient)">
+      <animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="10s" repeatCount="indefinite" />
+    </rect>
+  </g>
+
+  <text x="90" y="75" font-family="Inter, system-ui, sans-serif" font-size="42" font-weight="800" fill="#ffffff" letter-spacing="-1">
+    Spend<tspan fill="#58a6ff">Wise</tspan>
+  </text>
+</svg>

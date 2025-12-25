@@ -1,15 +1,15 @@
 from sqlmodel import SQLModel, create_engine, Session
 
-DATABASE_URL = "sqlite:///./movies.db"
-engine = create_engine(DATABASE_URL, echo=True)
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+
+engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})
 
 
-# Create tables in db if they don't exist
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 
-# Return db session
 def get_session():
     with Session(engine) as session:
         yield session
