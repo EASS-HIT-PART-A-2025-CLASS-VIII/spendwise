@@ -14,3 +14,4 @@ pydantic-ai==0.0.14
 openai==1.57.2
 griffe==1.5.4
 fpdf2==2.8.5
+pytest==9.0.0
