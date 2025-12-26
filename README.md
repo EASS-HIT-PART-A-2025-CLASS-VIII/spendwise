@@ -1,5 +1,4 @@
 # 🧠 SpendWise Intelligence
-
 AI-driven financial analysis platform built with a Vite-based frontend and a robust FastAPI backend, utilizing Redis for real-time telemetry and SQLModel for efficient data management.
 ---
 
