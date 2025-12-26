@@ -2,6 +2,7 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 
+
 @pytest.mark.anyio
 async def test_access_protected_route_without_token():
     # Use transport for newer httpx versions
@@ -10,6 +11,7 @@ async def test_access_protected_route_without_token():
         # Removed /api/v1 to match main.py
         response = await ac.get("/transactions")
     assert response.status_code == 401
+
 
 @pytest.mark.anyio
 async def test_invalid_token_format():
