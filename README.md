@@ -32,7 +32,7 @@ SpendWise includes a powerful Command Line Interface to manage your financial te
 
 #### **Commands**
 
-* **Seed**: Populates the database with 50 sample transactions from a CSV file, these transactions are set for the first user registered.
+* **Seed**: Populates the database with 50 sample transactions from a CSV file, these transactions are set for the first user registered, make sure to register a user before running this.
   ```bash
   docker compose exec backend python -m app.cli seed
   ```
