@@ -5,33 +5,43 @@ from app.main import app
 client = TestClient(app)
 
 
+import pytest
+import time
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
 @pytest.fixture
 def auth_header():
-    username = "testuser_test"
+    # Use a timestamp to ensure the user is always unique across demo runs
+    ts = int(time.time())
+    username = f"testuser_{ts}"
     password = "Password123!"
 
     client.post("/auth/register", json={"username": username, "password": password})
-
     response = client.post(
         "/auth/token", data={"username": username, "password": password}
     )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
-
 def test_user_registration_and_login():
+    ts = int(time.time())
+    unique_user = f"new_user_{ts}"
     reg_response = client.post(
-        "/auth/register", json={"username": "new_user", "password": "SecurePassword1!"}
+        "/auth/register", json={"username": unique_user, "password": "SecurePassword1!"}
     )
     assert reg_response.status_code == 200
     assert "access_token" in reg_response.json()
 
     login_response = client.post(
-        "/auth/token", data={"username": "new_user", "password": "SecurePassword1!"}
+        "/auth/token", data={"username": unique_user, "password": "SecurePassword1!"}
     )
     assert login_response.status_code == 200
     assert login_response.json()["token_type"] == "bearer"
 
+# ... (Keep the rest of the tests as they were, they use the auth_header fixture)
 
 def test_create_transaction(auth_header):
     response = client.post(

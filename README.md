@@ -40,16 +40,35 @@ SpendWise includes a powerful Command Line Interface to manage your financial te
   ```bash
   docker compose exec backend python -m app.cli reset
   ```
+---
 
 ## 🧪 Testing
+The project includes a comprehensive test suite covering core logic, security, and microservice service contracts.
 
-Run the containers and
-execute the test suite within the container:
-
+### Running Tests
+Execute the full suite inside the backend container environment:
 ```bash
-docker compose exec backend python -m pytest -v
+docker compose exec backend pytest -v
+```
+### Test Categories
+* **Core Transactions (`tests/test_transactions.py`):** Verifies the EX1/EX2 CRUD logic, including user registration, transaction creation, and dashboard statistics.
+* **Security Baseline (`tests/test_security.py`):** Ensures JWT protection is active, verifying that missing tokens or malformed credentials result in `401 Unauthorized` responses.
+* **Async & Idempotency (`tests/test_refresh.py`):** Validates the microservice service contract by ensuring Redis locks prevent redundant AI analysis tasks.
+
+### Local Demo
+To see the entire lifecycle (Build -> Seed -> Refresh -> Test), run:
+```bash
+./backend/scripts/demo.sh
 ```
 
+---
+## 🤖 AI Assistance
+This project utilized **Gemini (Google)** to assist in the following areas:
+* **Architecture Design:** Guided the transition from a monolithic backend to a containerized microservices stack using Docker Compose and Redis.
+* **Debugging:** Assisted in resolving `NoReferencedTableError` during database seeding by identifying missing model imports in the CLI metadata registry.
+* **Async Logic:** Developed the `refresh.py` utility using `asyncio.Semaphore` for bounded concurrency and Redis for idempotency logic.
+* **Security Baseline:** Helped implement JWT role-based access control and modern `httpx.ASGITransport` testing syntax for the security suite.
+* **Verification:** All AI-generated code snippets were manually verified by running the `demo.sh` orchestration script and ensuring 100% test coverage in the local Docker environment.
 ---
 
 ## 🔐 Key Features
